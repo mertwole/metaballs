@@ -4,8 +4,8 @@ out vec4 color;
 
 struct metaball
 {
-	vec3 pos_charge;
-	vec3 color;
+	vec4 pos_velocity;
+	vec4 color_charge;
 };
 
 layout(binding = 0, std430) buffer METABALLS
@@ -30,13 +30,13 @@ void main()
 
 	for(int i = 0; i < metaballs.length(); i++)
 	{
-		float this_charge = ChargeEvalFunc(metaballs[i].pos_charge);
+		float this_charge = ChargeEvalFunc(vec3(metaballs[i].pos_velocity.xy, metaballs[i].color_charge.w));
 		charge += this_charge;
-		blended_color += this_charge * metaballs[i].color;
+		blended_color += this_charge * metaballs[i].color_charge.xyz;
 	}
 
 	if(charge > threshold)
 		color = vec4(blended_color / charge, 1);
 	else
-		discard;
+		color = vec4(0);
 }

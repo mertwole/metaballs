@@ -14,7 +14,7 @@ namespace Metaballs2D
 
             int vert_shader = GL.CreateShader(ShaderType.VertexShader);
             int frag_shader = GL.CreateShader(ShaderType.FragmentShader);
-            
+
             GL.ShaderSource(frag_shader, fragment_shader_code);
             GL.CompileShader(frag_shader);
 
@@ -30,6 +30,24 @@ namespace Metaballs2D
 
             GL.DeleteShader(vert_shader);
             GL.DeleteShader(frag_shader);
+
+            return shader_program;
+        }
+
+        public static int CompileComputeShader(StreamReader compute_shader)
+        {
+            string compute_shader_code = compute_shader.ReadToEnd();
+
+            int comp_shader = GL.CreateShader(ShaderType.ComputeShader);
+            GL.ShaderSource(comp_shader, compute_shader_code);
+            GL.CompileShader(comp_shader);
+
+            int shader_program = GL.CreateProgram();
+
+            GL.AttachShader(shader_program, comp_shader);
+            GL.LinkProgram(shader_program);
+
+            GL.DeleteShader(comp_shader);
 
             return shader_program;
         }
