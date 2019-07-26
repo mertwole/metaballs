@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using System.IO;
 
-namespace OpenTK_Sample
+namespace Metaballs2D
 {
     class CompileShaders
     {
@@ -30,24 +30,6 @@ namespace OpenTK_Sample
 
             GL.DeleteShader(vert_shader);
             GL.DeleteShader(frag_shader);
-
-            return shader_program;
-        }
-
-        public static int CompileComputeShader(StreamReader compute_shader)
-        {
-            string compute_shader_code = compute_shader.ReadToEnd();
-
-            int comp_shader = GL.CreateShader(ShaderType.ComputeShader);
-            GL.ShaderSource(comp_shader, compute_shader_code);
-            GL.CompileShader(comp_shader);
-
-            int shader_program = GL.CreateProgram();
-
-            GL.AttachShader(shader_program, comp_shader);
-            GL.LinkProgram(shader_program);
-
-            GL.DeleteShader(comp_shader);
 
             return shader_program;
         }

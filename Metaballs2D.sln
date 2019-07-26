@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTK_Sample", "OpenTK_Sample.csproj", "{1E6C7B12-16B5-44AE-A717-151EB34C383A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metaballs2D", "Metaballs2D.csproj", "{1E6C7B12-16B5-44AE-A717-151EB34C383A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
