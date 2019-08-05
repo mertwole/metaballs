@@ -34,6 +34,8 @@ namespace Metaballs3D
 
         protected override void OnLoad(EventArgs E)
         {
+            GL.Enable(EnableCap.DepthTest);
+
             #region compile shaders
             render_shader = CompileShaders.Compile(
                 new System.IO.StreamReader("frag_shader.glsl"), 
@@ -81,7 +83,7 @@ namespace Metaballs3D
 
             for (int i = 0; i < metaball_count; i++)
             {
-                Vector3 pos = new Vector3(rand.Next(-50, 50) / 100f, rand.Next(-50, 50) / 100f, rand.Next(-50, 50) / 100f);
+                Vector3 pos = new Vector3(rand.Next(-100, 100) / 100f, rand.Next(-100, 100) / 100f, rand.Next(-100, 100) / 100f);
                 Vector3 color = possible_colors[rand.Next(possible_colors.Length)];
                 float charge = 1;
 
@@ -94,7 +96,7 @@ namespace Metaballs3D
 
             Metaballs = new Metaball[]
             {
-                new Metaball(){color_charge = new Vector4(1, 0, 0, 1), position = new Vector4(0, 0, 0, 0)}
+               new Metaball(){color_charge = new Vector4(1, 0, 0, 1), position = new Vector4(0, 0, 0, 0)}
             };
 
             metaballs_ssbo = GL.GenBuffer();
@@ -112,7 +114,7 @@ namespace Metaballs3D
         }
 
         const int metaball_count = 1;
-        const float threshold = 2;
+        const float threshold = 1.1f;
 
         Vector3 MarchingCubesMin = new Vector3(-1);
         float MarchingCubesStep = 2f / 32f; 
@@ -128,9 +130,12 @@ namespace Metaballs3D
 
         protected override void OnRenderFrame(FrameEventArgs E)
         {
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             GL.UseProgram(render_shader);
+
+            GL.Uniform1(GL.GetUniformLocation(render_shader, "show_mesh"), show_mesh ? 1 : 0);
+            GL.Uniform1(GL.GetUniformLocation(render_shader, "show_debug"), show_debug ? 1 : 0);
 
             Matrix4 transform_mat = model * camera.Matrix * projection;
             GL.UniformMatrix4(GL.GetUniformLocation(render_shader, "transform_mat"), false, ref transform_mat);
@@ -142,10 +147,19 @@ namespace Metaballs3D
             camera.Update(0.01f);
         }
 
+        bool show_mesh = true;
+        bool show_debug = true;
+
         protected override void OnKeyDown(KeyboardKeyEventArgs e)
         {
             if (e.Key == Key.Escape)
                 Environment.Exit(1);
+
+            if (e.Key == Key.M)
+                show_mesh = !show_mesh;
+
+            if (e.Key == Key.G)
+                show_debug = !show_debug;
 
             Camera.MouseEvents(e);
         }
