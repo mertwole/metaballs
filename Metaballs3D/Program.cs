@@ -2,6 +2,7 @@ using System;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Input;
 
 namespace Metaballs3D
 {
@@ -24,7 +25,6 @@ namespace Metaballs3D
 
         protected override void OnResize(EventArgs E)
         {
-            base.OnResize(E);
             GL.Viewport(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height);
         }
 
@@ -34,84 +34,125 @@ namespace Metaballs3D
 
         protected override void OnLoad(EventArgs E)
         {
-            base.OnLoad(E);
+            #region compile shaders
+            render_shader = CompileShaders.Compile(
+                new System.IO.StreamReader("frag_shader.glsl"), 
+                new System.IO.StreamReader("vert_shader.glsl"), 
+                new System.IO.StreamReader("geom_shader.glsl"));
 
-            render_shader = CompileShaders.Compile(new System.IO.StreamReader("frag_shader.glsl"), new System.IO.StreamReader("vert_shader.glsl"));
+            //compute_shader = CompileShaders.CompileComputeShader(new System.IO.StreamReader("comp_shader.glsl"));
+            #endregion
+
+            #region uniforms in render shader
             GL.UseProgram(render_shader);
             GL.Uniform1(GL.GetUniformLocation(render_shader, "threshold"), threshold);
 
-            compute_shader = CompileShaders.CompileComputeShader(new System.IO.StreamReader("comp_shader.glsl"));
+            GL.Uniform3(GL.GetUniformLocation(render_shader, "MarchingCubesCount"), MarchingCubesCountX, MarchingCubesCountY, MarchingCubesCountZ);
+            GL.Uniform1(GL.GetUniformLocation(render_shader, "MarchingCubesStep"), MarchingCubesStep); 
+            GL.Uniform3(GL.GetUniformLocation(render_shader, "MarchingCubesMin"), MarchingCubesMin);
+            #endregion
 
-            float[] vertices =
-            {
-                -1, -1,
-                -1, 1,
-                1, 1,
-                1, -1
-            };
-
+            #region create VAO & VBO
             VAO = GL.GenVertexArray();
             VBO = GL.GenBuffer();
 
             GL.BindVertexArray(VAO);
             {
                 GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-                GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
+                GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float), new float[] { 0 }, BufferUsageHint.StaticDraw);
 
-                GL.VertexAttribPointer(0, 2, VertexAttribPointerType.Float, false, 2 * sizeof(float), 0);
+                GL.VertexAttribPointer(0, 1, VertexAttribPointerType.Float, false, 1 * sizeof(float), 0);
                 GL.EnableVertexAttribArray(0);
 
                 GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             }
+            #endregion
 
+            #region generate metaballs and put them into SSBO
             var Metaballs = new Metaball[metaball_count];
 
             Vector3[] possible_colors = new Vector3[]
             {
-                new Vector3(0, 1, 0)
+                new Vector3(0, 1, 0),
+                new Vector3(1, 1, 0),
+                new Vector3(1, 0, 0),
+                new Vector3(0, 0, 1)
             };
 
-            for(int i = 0; i < metaball_count; i++)
+            for (int i = 0; i < metaball_count; i++)
             {
-                Vector2 pos = new Vector2(rand.Next(-100, 100) / 100f, rand.Next(-100, 100) / 100f);
-                Vector2 vel = new Vector2(rand.Next(-100, 100) / 10000f, rand.Next(-100, 100) / 10000f);
+                Vector3 pos = new Vector3(rand.Next(-50, 50) / 100f, rand.Next(-50, 50) / 100f, rand.Next(-50, 50) / 100f);
                 Vector3 color = possible_colors[rand.Next(possible_colors.Length)];
-                float charge = rand.Next(50) / 100 + 0.5f;
+                float charge = 1;
 
                 Metaballs[i] = new Metaball()
                 {
-                    pos_vel = new Vector4(pos.X, pos.Y, vel.X, vel.Y),
+                    position = new Vector4(pos.X, pos.Y, pos.Z, 0),
                     color_charge = new Vector4(color, charge)
                 };
             }
 
+            Metaballs = new Metaball[]
+            {
+                new Metaball(){color_charge = new Vector4(1, 0, 0, 1), position = new Vector4(0, 0, 0, 0)}
+            };
+
             metaballs_ssbo = GL.GenBuffer();
             GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, metaballs_ssbo);
             GL.BufferData(BufferTarget.ShaderStorageBuffer, sizeof(float) * 8 * Metaballs.Length, Metaballs, BufferUsageHint.StaticDraw);
+            #endregion
         }
 
         Random rand = new Random();
 
         struct Metaball
         {
-            public Vector4 pos_vel;
+            public Vector4 position;
             public Vector4 color_charge;
         }
 
-        const int metaball_count = 32;
-        const float threshold = 50;
+        const int metaball_count = 1;
+        const float threshold = 2;
+
+        Vector3 MarchingCubesMin = new Vector3(-1);
+        float MarchingCubesStep = 2f / 32f; 
+        const int MarchingCubesCountX = 32;
+        const int MarchingCubesCountY = 32;
+        const int MarchingCubesCountZ = 32;
+        const int MarchingCubesCount = MarchingCubesCountX * MarchingCubesCountY * MarchingCubesCountZ;
+
+        Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, window_width / (float)window_height, 0.01f, 100);
+        Matrix4 model = Matrix4.Identity;
+
+        Camera camera = new Camera(new Vector3(0, 0, 2), 0, -(float)Math.PI / 2);
 
         protected override void OnRenderFrame(FrameEventArgs E)
         {
-            base.OnRenderFrame(E);
-
-            GL.UseProgram(compute_shader);
-            GL.DispatchCompute(metaball_count / 32, 1, 1);
+            GL.Clear(ClearBufferMask.ColorBufferBit);
 
             GL.UseProgram(render_shader);
-            GL.DrawArrays(PrimitiveType.Quads, 0, 4);
+
+            Matrix4 transform_mat = model * camera.Matrix * projection;
+            GL.UniformMatrix4(GL.GetUniformLocation(render_shader, "transform_mat"), false, ref transform_mat);
+
+            GL.DrawArraysInstanced(PrimitiveType.Points, 0, 1, MarchingCubesCount);
 
             SwapBuffers();
+
+            camera.Update(0.01f);
+        }
+
+        protected override void OnKeyDown(KeyboardKeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+                Environment.Exit(1);
+
+            Camera.MouseEvents(e);
+        }
+
+        protected override void OnKeyUp(KeyboardKeyEventArgs e)
+        {
+            Camera.MouseEvents(e);
         }
     }
 }
