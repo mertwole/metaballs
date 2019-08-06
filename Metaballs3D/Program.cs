@@ -94,11 +94,6 @@ namespace Metaballs3D
                 };
             }
 
-            Metaballs = new Metaball[]
-            {
-               new Metaball(){color_charge = new Vector4(1, 0, 0, 1), position = new Vector4(0, 0, 0, 0)}
-            };
-
             metaballs_ssbo = GL.GenBuffer();
             GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, metaballs_ssbo);
             GL.BufferData(BufferTarget.ShaderStorageBuffer, sizeof(float) * 8 * Metaballs.Length, Metaballs, BufferUsageHint.StaticDraw);
@@ -113,11 +108,11 @@ namespace Metaballs3D
             public Vector4 color_charge;
         }
 
-        const int metaball_count = 1;
-        const float threshold = 1.1f;
+        const int metaball_count = 3;
+        const float threshold = 6f;
 
-        Vector3 MarchingCubesMin = new Vector3(-1);
-        float MarchingCubesStep = 2f / 32f; 
+        Vector3 MarchingCubesMin = new Vector3(-2);
+        float MarchingCubesStep = 4f / 32f; 
         const int MarchingCubesCountX = 32;
         const int MarchingCubesCountY = 32;
         const int MarchingCubesCountZ = 32;
