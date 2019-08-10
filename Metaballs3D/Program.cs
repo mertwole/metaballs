@@ -35,6 +35,7 @@ namespace Metaballs3D
         protected override void OnLoad(EventArgs E)
         {
             GL.Enable(EnableCap.DepthTest);
+            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
 
             #region compile shaders
             render_shader = CompileShaders.Compile(
@@ -52,6 +53,10 @@ namespace Metaballs3D
             GL.Uniform3(GL.GetUniformLocation(render_shader, "MarchingCubesCount"), MarchingCubesCountX, MarchingCubesCountY, MarchingCubesCountZ);
             GL.Uniform1(GL.GetUniformLocation(render_shader, "MarchingCubesStep"), MarchingCubesStep); 
             GL.Uniform3(GL.GetUniformLocation(render_shader, "MarchingCubesMin"), MarchingCubesMin);
+
+            int CubesSSBO = GL.GenBuffer();
+            GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, CubesSSBO);
+            GL.BufferData(BufferTarget.ShaderStorageBuffer, Cubes.Table.Length * sizeof(int), Cubes.Table, BufferUsageHint.StaticDraw);
             #endregion
 
             #region create VAO & VBO
@@ -108,14 +113,14 @@ namespace Metaballs3D
             public Vector4 color_charge;
         }
 
-        const int metaball_count = 3;
-        const float threshold = 6f;
+        const int metaball_count = 1;
+        const float threshold = 2f;
 
         Vector3 MarchingCubesMin = new Vector3(-2);
-        float MarchingCubesStep = 4f / 32f; 
-        const int MarchingCubesCountX = 32;
-        const int MarchingCubesCountY = 32;
-        const int MarchingCubesCountZ = 32;
+        float MarchingCubesStep = 4f / 128f; 
+        const int MarchingCubesCountX = 128;
+        const int MarchingCubesCountY = 128;
+        const int MarchingCubesCountZ = 128;
         const int MarchingCubesCount = MarchingCubesCountX * MarchingCubesCountY * MarchingCubesCountZ;
 
         Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, window_width / (float)window_height, 0.01f, 100);
@@ -143,7 +148,7 @@ namespace Metaballs3D
         }
 
         bool show_mesh = true;
-        bool show_debug = true;
+        bool show_debug = false;
 
         protected override void OnKeyDown(KeyboardKeyEventArgs e)
         {
