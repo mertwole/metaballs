@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metaballs2D", "Metaballs2D\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metaballs3D", "Metaballs3D\Metaballs3D.csproj", "{3D6D200A-421E-4BC9-9255-CF78BA3AEB31}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Metaballs3D_nonRealTime", "Metaballs3D_nonRealTime", "{D54F0D68-D0E5-4C7A-86F6-C77CE70C6614}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metaballs3D_nonRealTime", "Metaballs3D_nonRealTime\Metaballs3D_nonRealTime.csproj", "{4A980331-B448-403E-AA1C-05D2097D594E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +29,10 @@ Global
 		{3D6D200A-421E-4BC9-9255-CF78BA3AEB31}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D6D200A-421E-4BC9-9255-CF78BA3AEB31}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D6D200A-421E-4BC9-9255-CF78BA3AEB31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A980331-B448-403E-AA1C-05D2097D594E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A980331-B448-403E-AA1C-05D2097D594E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A980331-B448-403E-AA1C-05D2097D594E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A980331-B448-403E-AA1C-05D2097D594E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +40,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{1E6C7B12-16B5-44AE-A717-151EB34C383A} = {B2502895-8890-47A9-93AD-8A47A46A8A45}
 		{3D6D200A-421E-4BC9-9255-CF78BA3AEB31} = {E19A9270-231F-4853-8FE0-943EED527857}
+		{4A980331-B448-403E-AA1C-05D2097D594E} = {D54F0D68-D0E5-4C7A-86F6-C77CE70C6614}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5A10B38B-E8AE-4C8E-B415-FC45FD2F1037}
