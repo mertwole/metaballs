@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Threading;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
@@ -51,7 +53,6 @@ namespace Metaballs3D
             GL.Uniform1(GL.GetUniformLocation(compute_shader, "threshold"), threshold);
 
             GL.Uniform1(GL.GetUniformLocation(compute_shader, "MarchingCubesStep"), MarchingCubesStep); 
-            GL.Uniform3(GL.GetUniformLocation(compute_shader, "MarchingCubesMin"), MarchingCubesMin);
 
             GL.Uniform1(GL.GetUniformLocation(compute_shader, "default_vert_value"), DEFAULT_VERT_VALUE);
             #endregion
@@ -107,17 +108,39 @@ namespace Metaballs3D
 
             #region meshSSBO
             int meshSSBO = GL.GenBuffer();
-            int SSBOsize = sizeof(float) * 3 * 4 * 4 * MarchingCubesCount;
+            int SSBOsize = 3 * 4 * 4 * (8 * 8 * 8);
             GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 2, meshSSBO);
-            GL.BufferData(BufferTarget.ShaderStorageBuffer, SSBOsize, new float[0], BufferUsageHint.DynamicCopy);
-
-            GL.UseProgram(compute_shader);
-            GL.DispatchCompute(MarchingCubesCountX / 8, MarchingCubesCountY / 8, MarchingCubesCountZ / 8);
-
-            var data = new float[SSBOsize];
-            GL.GetBufferSubData(BufferTarget.ShaderStorageBuffer, new IntPtr(0), new IntPtr(SSBOsize), data);
+            GL.BufferData(BufferTarget.ShaderStorageBuffer, SSBOsize * sizeof(float), new float[0], BufferUsageHint.DynamicCopy);
             #endregion
+
+            FillVertices(meshSSBO, SSBOsize);     
         }
+
+        void FillVertices(int meshSSBO, int SSBOsize)
+        {
+            GL.UseProgram(compute_shader);
+
+            int MarchingCubesMin_uf = GL.GetUniformLocation(compute_shader, "MarchingCubesMin");
+
+            for (int x = 0; x < MarchingCubesCountX / 8; x++)
+                for (int y = 0; y < MarchingCubesCountY / 8; y++)
+                    for (int z = 0; z < MarchingCubesCountZ / 8; z++)
+                    {
+                        GL.Uniform3(MarchingCubesMin_uf, MarchingCubesMin + new Vector3(x, y, z) * 8 * MarchingCubesStep);
+
+                        GL.DispatchCompute(1, 1, 1);
+                        GL.MemoryBarrier(MemoryBarrierFlags.AllBarrierBits);
+
+                        var data = new float[SSBOsize];
+                        GL.GetBufferSubData(BufferTarget.ShaderStorageBuffer, new IntPtr(0), new IntPtr(SSBOsize * sizeof(float)), data);
+
+                        foreach (float i in data)
+                            if (i != DEFAULT_VERT_VALUE)
+                                packedVertices.Add(i);
+                    }     
+        }
+
+        List<float> packedVertices = new List<float>();
 
         const float DEFAULT_VERT_VALUE = -10000;
 
@@ -133,10 +156,10 @@ namespace Metaballs3D
         const float threshold = 8f;
 
         Vector3 MarchingCubesMin = new Vector3(-2);
-        float MarchingCubesStep = 4f / 32f; 
-        const int MarchingCubesCountX = 32;
-        const int MarchingCubesCountY = 32;
-        const int MarchingCubesCountZ = 32;
+        float MarchingCubesStep = 4f / 1024f; 
+        const int MarchingCubesCountX = 1024;
+        const int MarchingCubesCountY = 1024;
+        const int MarchingCubesCountZ = 1024;
         const int MarchingCubesCount = MarchingCubesCountX * MarchingCubesCountY * MarchingCubesCountZ;
 
         Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, window_width / (float)window_height, 0.01f, 100);
@@ -153,7 +176,7 @@ namespace Metaballs3D
             Matrix4 transform_mat = model * camera.Matrix * projection;
             GL.UniformMatrix4(GL.GetUniformLocation(render_shader, "transform_mat"), false, ref transform_mat);
 
-            GL.DrawArraysInstanced(PrimitiveType.Points, 0, 1, MarchingCubesCount);
+            //GL.DrawArraysInstanced(PrimitiveType.Points, 0, 1, MarchingCubesCount);
 
             SwapBuffers();
 
