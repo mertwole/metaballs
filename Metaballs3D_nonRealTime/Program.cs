@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.IO;
+using Newtonsoft.Json;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
@@ -42,7 +43,7 @@ namespace Metaballs3D
             #region compile shaders
             render_shader = CompileShaders.Compile(
                 new System.IO.StreamReader("frag_shader.glsl"), 
-                new System.IO.StreamReader("vert_shader.glsl"), 
+                new System.IO.StreamReader("vert_shader.glsl"),
                 new System.IO.StreamReader("geom_shader.glsl"));
 
             compute_shader = CompileShaders.CompileComputeShader(new System.IO.StreamReader("comp_shader.glsl"));
@@ -60,23 +61,7 @@ namespace Metaballs3D
             int CubesSSBO = GL.GenBuffer();
             GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 1, CubesSSBO);
             GL.BufferData(BufferTarget.ShaderStorageBuffer, Cubes.Table.Length * sizeof(int), Cubes.Table, BufferUsageHint.StaticDraw);
-            
-            #region create VAO & VBO
-            VAO = GL.GenVertexArray();
-            VBO = GL.GenBuffer();
-
-            GL.BindVertexArray(VAO);
-            {
-                GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-                GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float), new float[] { 0 }, BufferUsageHint.StaticDraw);
-
-                GL.VertexAttribPointer(0, 1, VertexAttribPointerType.Float, false, 1 * sizeof(float), 0);
-                GL.EnableVertexAttribArray(0);
-
-                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            }
-            #endregion
-            
+       
             #region generate metaballs and put them into SSBO
             var Metaballs = new Metaball[metaball_count];
 
@@ -113,7 +98,27 @@ namespace Metaballs3D
             GL.BufferData(BufferTarget.ShaderStorageBuffer, SSBOsize * sizeof(float), new float[0], BufferUsageHint.DynamicCopy);
             #endregion
 
-            FillVertices(meshSSBO, SSBOsize);     
+            FillVertices(meshSSBO, SSBOsize);
+
+            var json = new StreamWriter("VBO.json");
+            json.Write(JsonConvert.SerializeObject(packedVertices));
+            json.Close();
+        
+            #region create VAO & VBO
+            VAO = GL.GenVertexArray();
+            VBO = GL.GenBuffer();
+
+            GL.BindVertexArray(VAO);
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+                GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * packedVertices.Count, packedVertices.ToArray(), BufferUsageHint.StaticDraw);
+
+                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 3 * sizeof(float), 0);
+                GL.EnableVertexAttribArray(0);
+
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            }
+            #endregion
         }
 
         void FillVertices(int meshSSBO, int SSBOsize)
@@ -173,11 +178,13 @@ namespace Metaballs3D
 
             GL.UseProgram(render_shader);
 
-            Matrix4 transform_mat = model * camera.Matrix * projection;
-            GL.UniformMatrix4(GL.GetUniformLocation(render_shader, "transform_mat"), false, ref transform_mat);
+            GL.BindVertexArray(VAO);
+            {
+                Matrix4 transform_mat = model * camera.Matrix * projection;
+                GL.UniformMatrix4(GL.GetUniformLocation(render_shader, "transform_mat"), false, ref transform_mat);
 
-            //GL.DrawArraysInstanced(PrimitiveType.Points, 0, 1, MarchingCubesCount);
-
+                GL.DrawArrays(PrimitiveType.Triangles, 0, packedVertices.Count);
+            }
             SwapBuffers();
 
             camera.Update(0.01f);
