@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3D6D200A-421E-4BC9-9255-CF78BA3AEB31}</ProjectGuid>
+    <ProjectGuid>{E4ED2CBE-1B39-4239-BDE7-1F1B3C7719CA}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Metaballs3D</RootNamespace>
-    <AssemblyName>Metaballs3D</AssemblyName>
+    <AssemblyName>Metaballs3D_rayTracing</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -63,17 +63,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Camera.cs" />
-    <Compile Include="CompileShaders.cs" />
-    <Compile Include="Cubes.cs" />
+    <Compile Include="ShaderProgram.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="frag_shader.glsl">
+    <None Include="comp_shader.glsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="geom_shader.glsl">
+    <None Include="frag_shader.glsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="OpenTK.dll.config" />
