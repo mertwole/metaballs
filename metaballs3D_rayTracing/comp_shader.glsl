@@ -73,8 +73,8 @@ Plane[PLANES_COUNT] planes =
 	{normalize(dvec3(0, 1, 0)), dvec3(0, -1, 0), 4},//bottom
 	{normalize(dvec3(0, 1, 0)), dvec3(0, 7, 0), 4},//top
 
-	{normalize(dvec3(-1, 0, 0)), dvec3(5, 0, 0), 5},//right
-	{normalize(dvec3(1, 0, 0)), dvec3(-5, 0, 0), 6},//left
+	{normalize(dvec3(-1, 0, 0)), dvec3(5, 0, 0), 4},//right
+	{normalize(dvec3(1, 0, 0)), dvec3(-5, 0, 0), 4},//left
 
 	{normalize(dvec3(0, 0, 1)), dvec3(0, 0, -5), 4},//back
 	{normalize(dvec3(0, 0, 1)), dvec3(0, 0, 4), 4}//front
@@ -196,47 +196,52 @@ Raytrace_result TraceWithPlane(Ray ray, Plane plane)
 	return result;
 }
 
-#define THRESHOLD 64
-bool GetCharge(dvec3 pos)
+#define THRESHOLD 1
+dvec4 GetCharge_Gradient(dvec3 pos)
 {
-	double charge;
+	double charge = 0;
+	dvec3 gradient = dvec3(0);
 
 	for(int i = 0; i < METABALLS_COUNT; i++)
 	{
 		dvec3 dist = pos - metaballs[i].position;
-		charge += metaballs[i].charge / dot(dist, dist);
+		double point_charge = 1 / dot(dist, dist);
+		gradient += point_charge * point_charge * dist;// *2 but later gradient will be normalized
+
+		charge += metaballs[i].charge * point_charge;
 	}
 
-	return charge >= THRESHOLD;
+	return dvec4(charge, gradient);
 }
 
-#define MARCHING_RAY_STEP 0.1
-#define MARCHING_RAY_ITERATIONS 100
-#define MARCHING_RAY_MATERIAL 0
+#define MARCHING_RAY_STEP 0.005
+#define MARCHING_RAY_ITERATIONS 2000
+#define MARCHING_RAY_MATERIAL 6
 
 Raytrace_result TraceWithMetaballs(Ray ray)
 {
-    //Sphere d = {dvec3(-5, -1, -5), 3, 0};
-	//return TraceWithSphere(ray, d);
-
 	Raytrace_result result;
-	result.intersection = false;
 
-	for(int i = 0; i < MARCHING_RAY_ITERATIONS; i++)
+	for(int i = 1; i < MARCHING_RAY_ITERATIONS; i++)
 	{
 		result.t = ray.min_value + MARCHING_RAY_STEP * i;
 		if(result.t > ray.max_value)
+		{
+			result.intersection = false;
 			return result;
+		}
 		result.contact = result.t * ray.direction + ray.source;
-		if(GetCharge(result.contact))
+		dvec4 charge_grad = GetCharge_Gradient(result.contact);
+		if(charge_grad.x > THRESHOLD)
 		{
 			result.intersection = true;
-			result.normal = -ray.direction;
+			result.normal = normalize(charge_grad.yzw);
 			result.material_id = MARCHING_RAY_MATERIAL;
 			return result;
 		}			
 	}
 
+	result.intersection = false;
 	return result;
 }
 //*************************lighting***************************
@@ -278,8 +283,8 @@ Directional_light[DIRECTIONAL_LIGHTS_COUNT] directional_lights =
 Point_light[POINT_LIGHTS_COUNT] point_lights = 
 {
 	//{dvec3(-3.99, 2, -3), dvec3(2, 0, 0), dvec3(0.5, 0, 0), 1, 0.2, 0.02},
-	{dvec3(0, 1, -3), dvec3(3), dvec3(0.5), 1, 0.02, 0.01},
-	{dvec3(0, 4.9, -3), dvec3(3), dvec3(0.5), 1, 0.02, 0.01}
+	{dvec3(3, 1, 3), dvec3(3), dvec3(0.5), 1, 0.02, 0.01},
+	{dvec3(0, 4.9, 3), dvec3(3), dvec3(0.5), 1, 0.02, 0.01}
 };
 #endif
 
@@ -467,7 +472,6 @@ dvec3 GetColor(Ray current_ray)
 }
 
 //************************************************************
-
 void main()
 { 
 	Ray current_ray;
@@ -492,7 +496,6 @@ void main()
 							-yaw_s,	yaw_c * pitch_s,	yaw_c * pitch_c);
 
 	current_ray.direction *= rotation;
-
 
 	imageStore(Texture, ivec2(gl_GlobalInvocationID.xy), vec4(GetColor(current_ray), 1));
 }

@@ -13,8 +13,8 @@ namespace Metaballs3D
             game.Run();
         }
 
-        static int window_width = 800;
-        static int window_height = 450;
+        static int window_width = 320;
+        static int window_height = 180;
         const int workgroup_size = 10;//max 32
         
         public Game() : base(window_width, window_height, GraphicsMode.Default, "metaballs"){
