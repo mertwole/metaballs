@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Metaballs2D")]
+[assembly: AssemblyTitle("Metaballs3D_rayTracing")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Metaballs2D")]
+[assembly: AssemblyProduct("Metaballs3D_rayTracing")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("1e6c7b12-16b5-44ae-a717-151eb34c383a")]
+[assembly: Guid("affd4968-8736-420d-b63f-ac4fbae08308")]
 
 // Version information for an assembly consists of the following four values:
 //
