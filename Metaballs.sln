@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.168
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Metaballs3D", "Metaballs3D", "{E19A9270-231F-4853-8FE0-943EED527857}"
 EndProject
@@ -15,9 +15,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Metaballs3D_nonRealTime", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metaballs3D_nonRealTime", "Metaballs3D_nonRealTime\Metaballs3D_nonRealTime.csproj", "{4A980331-B448-403E-AA1C-05D2097D594E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Metaballs3D_rayTracing", "Metaballs3D_rayTracing", "{EC4F9D8D-B6FC-4827-838C-D8A3C09EC077}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Metaballs3D_sphereTracing", "Metaballs3D_sphereTracing", "{87FE92F1-29A6-46B0-A82B-E93C31901811}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metaballs3D_rayTracing", "metaballs3D_rayTracing\Metaballs3D_rayTracing.csproj", "{E4ED2CBE-1B39-4239-BDE7-1F1B3C7719CA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metaballs3D_sphereTracing", "metaballs3D_sphereTracing\Metaballs3D_sphereTracing.csproj", "{E4ED2CBE-1B39-4239-BDE7-1F1B3C7719CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,7 +49,7 @@ Global
 		{1E6C7B12-16B5-44AE-A717-151EB34C383A} = {B2502895-8890-47A9-93AD-8A47A46A8A45}
 		{3D6D200A-421E-4BC9-9255-CF78BA3AEB31} = {E19A9270-231F-4853-8FE0-943EED527857}
 		{4A980331-B448-403E-AA1C-05D2097D594E} = {D54F0D68-D0E5-4C7A-86F6-C77CE70C6614}
-		{E4ED2CBE-1B39-4239-BDE7-1F1B3C7719CA} = {EC4F9D8D-B6FC-4827-838C-D8A3C09EC077}
+		{E4ED2CBE-1B39-4239-BDE7-1F1B3C7719CA} = {87FE92F1-29A6-46B0-A82B-E93C31901811}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5A10B38B-E8AE-4C8E-B415-FC45FD2F1037}

@@ -7,7 +7,7 @@
     <ProjectGuid>{E4ED2CBE-1B39-4239-BDE7-1F1B3C7719CA}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Metaballs3D</RootNamespace>
-    <AssemblyName>Metaballs3D_rayTracing</AssemblyName>
+    <AssemblyName>Metaballs3D_sphereTracing</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -62,15 +62,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Camera.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ShaderProgram.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="comp_shader.glsl">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="frag_shader.glsl">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
