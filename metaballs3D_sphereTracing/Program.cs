@@ -14,8 +14,8 @@ namespace Metaballs3D
             game.Run();
         }
 
-        static int window_width = 500;
-        static int window_height = 500;
+        static int window_width = 1200;
+        static int window_height = 900;
         
         public Game() : base(window_width, window_height, GraphicsMode.Default, "metaballs"){
             VSync = VSyncMode.On;
@@ -52,14 +52,23 @@ namespace Metaballs3D
             public Vector4 color_charge;
         }
 
+        const int metaballs_count = 4;
+
         void FillMetaballsSSBO()
-        {
-            Metaball[] metaballs = new Metaball[]
+        {     
+            Metaball[] metaballs = new Metaball[metaballs_count];
+            Random rand = new Random();
+            for(int i = 0; i < metaballs_count; i++)
             {
-                new Metaball() { pos = new Vector4(-1.0f, 0.0f, 0.0f, 0.0f), color_charge = new Vector4(0.0f, 1.0f, 0.0f, 1.0f) },
-                new Metaball() { pos = new Vector4(1.0f, 0.0f, 0.0f, 0.0f), color_charge = new Vector4(1.0f, 0.0f, 0.0f, 1.0f) },
-                new Metaball() { pos = new Vector4(1.0f, -2.5f, 0.0f, 0.0f), color_charge = new Vector4(0.0f, 0.0f, 1.0f, 1.0f) },
-            };
+                float r = (float)rand.Next(1024) / 1024;
+                float g = (float)rand.Next(1024) / 1024;
+                float b = (float)rand.Next(1024) / 1024;
+                metaballs[i].color_charge = new Vector4(r, g, b, 1);
+                float x = (float)rand.Next(-1024, 1024) / 1024;
+                float y = (float)rand.Next(-1024, 1024) / 1024;
+                float z = (float)rand.Next(-1024, 1024) / 1024;
+                metaballs[i].pos = new Vector4(x * 3, y * 3, z * 3, 0);
+            }
 
             int metaballs_SSBO = GL.GenBuffer();
             GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, metaballs_SSBO);
@@ -67,7 +76,6 @@ namespace Metaballs3D
         }
 
         Camera camera = new Camera(new Vector3(0, 0, 10), 0, -(float)Math.PI / 2);
-
         Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, (float)window_width / (float)window_height, 0.1f, 100);
 
         protected override void OnRenderFrame(FrameEventArgs E)
@@ -86,6 +94,9 @@ namespace Metaballs3D
         protected override void OnKeyDown(KeyboardKeyEventArgs e)
         {
             camera.KeyboardEvents(e);
+
+            if (e.Keyboard.IsKeyDown(Key.R))
+                FillMetaballsSSBO();
         }
 
         protected override void OnKeyUp(KeyboardKeyEventArgs e)
