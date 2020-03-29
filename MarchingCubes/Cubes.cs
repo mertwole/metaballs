@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Metaballs3D
+namespace MarchingCubes
 {
     public static class Cubes
     {

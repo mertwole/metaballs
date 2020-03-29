@@ -3,7 +3,7 @@ using OpenTK.Input;
 using System;
 using static System.Math;
 
-namespace Metaballs3D
+namespace SphereTracing
 {
     public class Camera
     {

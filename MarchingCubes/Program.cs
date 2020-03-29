@@ -4,7 +4,7 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
 
-namespace Metaballs3D
+namespace MarchingCubes
 {
     class Game : GameWindow
     {
@@ -15,8 +15,8 @@ namespace Metaballs3D
             game.Run();
         }
 
-        static int window_width = 800;
-        static int window_height = 800;
+        static int window_width = 1000;
+        static int window_height = 1000;
 
         public Game() : base(window_width, window_height, GraphicsMode.Default, "Sample")
         {
@@ -28,7 +28,7 @@ namespace Metaballs3D
             GL.Viewport(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height);
         }
 
-        int render_shader, compute_shader;
+        int render_shader;
         int VAO, VBO;
         int metaballs_ssbo;
 
@@ -75,7 +75,29 @@ namespace Metaballs3D
             }
             #endregion
 
-            #region generate metaballs and put them into SSBO
+            GenerateMetaballs();
+        }
+
+        Random rand = new Random();
+
+        struct Metaball
+        {
+            public Vector4 position;
+            public Vector4 color_charge;
+        }
+
+        const int metaball_count = 2;
+        const float threshold = 2f;
+
+        Vector3 MarchingCubesMin = new Vector3(-2);
+        float MarchingCubesStep = 4f / 128f; 
+        const int MarchingCubesCountX = 128;
+        const int MarchingCubesCountY = 128;
+        const int MarchingCubesCountZ = 128;
+        const int MarchingCubesCount = MarchingCubesCountX * MarchingCubesCountY * MarchingCubesCountZ;
+
+        void GenerateMetaballs()
+        {
             var Metaballs = new Metaball[metaball_count];
 
             Vector3[] possible_colors = new Vector3[]
@@ -102,26 +124,7 @@ namespace Metaballs3D
             metaballs_ssbo = GL.GenBuffer();
             GL.BindBufferBase(BufferRangeTarget.ShaderStorageBuffer, 0, metaballs_ssbo);
             GL.BufferData(BufferTarget.ShaderStorageBuffer, sizeof(float) * 8 * Metaballs.Length, Metaballs, BufferUsageHint.StaticDraw);
-            #endregion
         }
-
-        Random rand = new Random();
-
-        struct Metaball
-        {
-            public Vector4 position;
-            public Vector4 color_charge;
-        }
-
-        const int metaball_count = 1;
-        const float threshold = 2f;
-
-        Vector3 MarchingCubesMin = new Vector3(-2);
-        float MarchingCubesStep = 4f / 128f; 
-        const int MarchingCubesCountX = 128;
-        const int MarchingCubesCountY = 128;
-        const int MarchingCubesCountZ = 128;
-        const int MarchingCubesCount = MarchingCubesCountX * MarchingCubesCountY * MarchingCubesCountZ;
 
         Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, window_width / (float)window_height, 0.01f, 100);
         Matrix4 model = Matrix4.Identity;
@@ -160,6 +163,9 @@ namespace Metaballs3D
 
             if (e.Key == Key.G)
                 show_debug = !show_debug;
+
+            if (e.Key == Key.R)
+                GenerateMetaballs();
 
             Camera.MouseEvents(e);
         }

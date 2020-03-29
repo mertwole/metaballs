@@ -1,7 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using System.IO;
 
-namespace Metaballs3D
+namespace SphereTracing
 {
     public class ShaderProgram
     {

@@ -2,7 +2,7 @@
 using OpenTK.Input;
 using static System.Math;
 
-namespace Metaballs3D
+namespace MarchingCubes
 {
     public class Camera
     {

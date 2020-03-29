@@ -4,7 +4,7 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Input;
 
-namespace Metaballs3D
+namespace SphereTracing
 {
     class Game : GameWindow
     {

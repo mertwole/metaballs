@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{3D6D200A-421E-4BC9-9255-CF78BA3AEB31}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Metaballs3D</RootNamespace>
-    <AssemblyName>Metaballs3D</AssemblyName>
+    <RootNamespace>MarchingCubes</RootNamespace>
+    <AssemblyName>MarchingCubes</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
