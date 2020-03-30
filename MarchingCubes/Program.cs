@@ -86,8 +86,8 @@ namespace MarchingCubes
             public Vector4 color_charge;
         }
 
-        const int metaball_count = 2;
-        const float threshold = 2f;
+        const int metaball_count = 10;
+        const float threshold = 10f;
 
         Vector3 MarchingCubesMin = new Vector3(-2);
         float MarchingCubesStep = 4f / 128f; 
@@ -129,7 +129,7 @@ namespace MarchingCubes
         Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, window_width / (float)window_height, 0.01f, 100);
         Matrix4 model = Matrix4.Identity;
 
-        Camera camera = new Camera(new Vector3(0, 0, 2), 0, -(float)Math.PI / 2);
+        Camera camera = new Camera(new Vector3(0, 0, 6), 0, -(float)Math.PI / 2);
 
         protected override void OnRenderFrame(FrameEventArgs E)
         {

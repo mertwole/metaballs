@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarchingCubes", "MarchingCu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SphereTracing", "SphereTracing\SphereTracing.csproj", "{E4ED2CBE-1B39-4239-BDE7-1F1B3C7719CA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fluid", "Fluid", "{2AFD98DB-59D6-4C8D-A167-7A7C746540CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fluid", "Fluid\Fluid.csproj", "{9E6F0CD8-7CA4-4F48-A162-C45F00C1FEA2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,10 @@ Global
 		{E4ED2CBE-1B39-4239-BDE7-1F1B3C7719CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4ED2CBE-1B39-4239-BDE7-1F1B3C7719CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4ED2CBE-1B39-4239-BDE7-1F1B3C7719CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E6F0CD8-7CA4-4F48-A162-C45F00C1FEA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E6F0CD8-7CA4-4F48-A162-C45F00C1FEA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E6F0CD8-7CA4-4F48-A162-C45F00C1FEA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E6F0CD8-7CA4-4F48-A162-C45F00C1FEA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,6 +49,7 @@ Global
 		{1E6C7B12-16B5-44AE-A717-151EB34C383A} = {B2502895-8890-47A9-93AD-8A47A46A8A45}
 		{3D6D200A-421E-4BC9-9255-CF78BA3AEB31} = {E19A9270-231F-4853-8FE0-943EED527857}
 		{E4ED2CBE-1B39-4239-BDE7-1F1B3C7719CA} = {87FE92F1-29A6-46B0-A82B-E93C31901811}
+		{9E6F0CD8-7CA4-4F48-A162-C45F00C1FEA2} = {2AFD98DB-59D6-4C8D-A167-7A7C746540CF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5A10B38B-E8AE-4C8E-B415-FC45FD2F1037}

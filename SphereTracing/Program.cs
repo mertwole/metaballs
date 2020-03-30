@@ -55,7 +55,7 @@ namespace SphereTracing
         const int metaballs_count = 4;
 
         void FillMetaballsSSBO()
-        {     
+        {
             Metaball[] metaballs = new Metaball[metaballs_count];
             Random rand = new Random();
             for(int i = 0; i < metaballs_count; i++)
@@ -63,7 +63,7 @@ namespace SphereTracing
                 float r = (float)rand.Next(1024) / 1024;
                 float g = (float)rand.Next(1024) / 1024;
                 float b = (float)rand.Next(1024) / 1024;
-                metaballs[i].color_charge = new Vector4(r, g, b, 1);
+                metaballs[i].color_charge = new Vector4(r, g, b, 1.5f);
                 float x = (float)rand.Next(-1024, 1024) / 1024;
                 float y = (float)rand.Next(-1024, 1024) / 1024;
                 float z = (float)rand.Next(-1024, 1024) / 1024;

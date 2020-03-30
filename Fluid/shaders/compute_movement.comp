@@ -1,0 +1,23 @@
+#version 440 core
+layout( local_size_x = 32 ) in;
+
+struct Metaball
+{
+	vec4 pos;
+	vec4 velocity;
+	vec4 color_charge;
+};
+
+layout(std430, binding = 0) buffer METABALLS
+{
+	Metaball metaballs[];
+};
+
+uniform float delta_time = 0.001;
+
+void main()
+{
+	uint id = gl_GlobalInvocationID.x;
+	metaballs[id].pos += metaballs[id].velocity * delta_time;
+	metaballs[id].velocity -= vec4(0.0, 10, 0.0, 0.0);
+}
